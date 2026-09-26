@@ -42,6 +42,23 @@ class LocalEmbeddingIndex:
 
     @staticmethod
     def _build_documents(df: pd.DataFrame) -> list[dict[str, Any]]:
+        required_columns = {
+            "paper_id",
+            "title",
+            "text_for_embedding",
+            "published",
+            "authors_joined",
+            "categories_joined",
+            "summary",
+            "abs_url",
+            "pdf_url",
+        }
+        missing_columns = sorted(required_columns.difference(df.columns))
+        if missing_columns:
+            raise ValueError(f"Cannot build index; missing columns: {', '.join(missing_columns)}")
+        if df.empty:
+            raise ValueError("Cannot build an index from an empty DataFrame.")
+
         records = df.to_dict(orient="records")
         documents: list[dict[str, Any]] = []
         for index, row in enumerate(records):
@@ -96,7 +113,7 @@ class LocalEmbeddingIndex:
         client = chromadb.PersistentClient(path=str(persist_path))
         try:
             client.delete_collection(name=collection_name)
-        except Exception:
+        except chromadb.errors.NotFoundError:
             pass
         collection = client.create_collection(
             name=collection_name,
@@ -139,10 +156,19 @@ class LocalEmbeddingIndex:
         )
 
     def search(self, query: str, top_k: int | None = None) -> list[SearchResult]:
+        if not query.strip():
+            return []
+        requested_results = top_k if top_k is not None else self.settings.top_k
+        if requested_results <= 0:
+            raise ValueError("top_k must be greater than zero.")
+        collection_size = self.collection.count()
+        if collection_size == 0:
+            return []
+
         query_embedding = self.embedding_model.embed_query(query)
         results = self.collection.query(
             query_embeddings=[query_embedding],
-            n_results=top_k or self.settings.top_k,
+            n_results=min(requested_results, collection_size),
             include=["documents", "metadatas", "distances"],
         )
         ids = results.get("ids", [[]])[0]

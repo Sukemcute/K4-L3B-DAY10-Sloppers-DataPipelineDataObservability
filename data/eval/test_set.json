@@ -1,0 +1,92 @@
+[
+  {
+    "id": "qa-001",
+    "question_type": "summary",
+    "question": "What is the main contribution described in 'Continuous Benchmark Evaluation for Enterprise Retrieval Pipelines'?",
+    "ground_truth": "Static benchmarks fail to capture domain drift in enterprise knowledge bases.",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671812"
+    ]
+  },
+  {
+    "id": "qa-002",
+    "question_type": "authors",
+    "question": "Who authored 'Synthetic Corruption Testing: Stress-Testing Vector Search Robustness'?",
+    "ground_truth": "Kien Duong, Vy Ly",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671807"
+    ]
+  },
+  {
+    "id": "qa-003",
+    "question_type": "date",
+    "question": "When was 'Advanced Perspectives on Continuous Benchmark Evaluation for Enterprise Retrieval Pipelines' published?",
+    "ground_truth": "2026-06-12",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671824"
+    ]
+  },
+  {
+    "id": "qa-004",
+    "question_type": "categories",
+    "question": "What categories are assigned to 'Advanced Perspectives on Chunking Strategies for Technical Documentation Retrieval'?",
+    "ground_truth": "Information Retrieval, Natural Language Processing",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671821"
+    ]
+  },
+  {
+    "id": "qa-005",
+    "question_type": "summary",
+    "question": "What is the main contribution described in 'Advanced Perspectives on Multi-Agent Consensus for High-Stakes Fact Verification'?",
+    "ground_truth": "An extended empirical study on single LLM is susceptible to confirmation bias when evaluating retrieved evidence.",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671820"
+    ]
+  },
+  {
+    "id": "qa-006",
+    "question_type": "authors",
+    "question": "Who authored 'Advanced Perspectives on Evaluating Retrieval Precision with Token F1 and LLM Judges'?",
+    "ground_truth": "Tuan Phan, Mai Bui",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671817"
+    ]
+  },
+  {
+    "id": "qa-007",
+    "question_type": "date",
+    "question": "When was 'Advanced Perspectives on Mitigating Ghost Vectors in Dense Retrieval via Idempotent Indexing' published?",
+    "ground_truth": "2026-06-03",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671815"
+    ]
+  },
+  {
+    "id": "qa-008",
+    "question_type": "categories",
+    "question": "What categories are assigned to 'Agentic Retrieval-Augmented Generation for Knowledge-Intensive Tasks'?",
+    "ground_truth": "Artificial Intelligence, Information Retrieval",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671801"
+    ]
+  },
+  {
+    "id": "qa-009",
+    "question_type": "summary",
+    "question": "What is the main contribution described in 'Semantic Layer Integration for Agentic Text-to-SQL Pipelines'?",
+    "ground_truth": "Connecting LLMs directly to raw warehouse tables often results in schema misunderstandings.",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671806"
+    ]
+  },
+  {
+    "id": "qa-010",
+    "question_type": "authors",
+    "question": "Who authored 'Evaluating Retrieval Precision with Token F1 and LLM Judges'?",
+    "ground_truth": "Tuan Phan, Mai Bui",
+    "ground_truth_doc_ids": [
+      "10.1145/3637528.3671805"
+    ]
+  }
+]
