@@ -128,21 +128,21 @@ uv run python -c "from datetime import datetime, timezone; from core.config impo
 
 ## 8. Phân tích kết quả
 
-### Metrics chính (Phạm vi Data Ingestion, Corruption & Repair đã hoàn thành)
+### Metrics chính
 
 | Metric/signal | Baseline | Corrupted | Repaired | Nhận xét của cá nhân |
 | --- | ---: | ---: | ---: | --- |
-| Số dòng dữ liệu (`row_count`) | 24 | 21 | 24 | Corrupted mất 5 bài mới nhất và thêm 2 dòng trùng lặp; Repaired khôi phục đúng 24 dòng gốc. |
-| Số dòng trùng `paper_id` | 0 | 2 | 0 | Kịch bản `duplicate_rows` tạo 2 bản ghi trùng DOI (`3671824`, `3671823`). |
-| Số dòng vi phạm độ dài `title < 8` | 0 | 5 | 0 | Kịch bản `truncate_title` cắt tiêu đề xuống 5 ký tự. |
-| Số dòng rỗng/nhiễu `summary` | 0 | 8 (4 rỗng + 4 nhiễu) | 0 | Làm mất thông tin tóm tắt và gây nhiễu vector embedding. |
-| Tỷ lệ bài quá hạn `age_days > 180` | 4.17% (1/24) | 47.62% (10/21) | 4.17% (1/24) | Kịch bản `stale_date` đẩy tỷ lệ quá hạn vượt ngưỡng SLA 25% (`is_fresh = False`). |
-| `retrieval_hit_rate` / `mean_token_f1` | *(Chờ tích hợp nhóm)* | *(Chờ tích hợp nhóm)* | *(Chờ tích hợp nhóm)* | Sẽ được cập nhật vào `group_report.md` khi ghép với module `evaluation` và `pipelines` của nhóm. |
+| `retrieval_hit_rate` | 1.0000 | 0.7000 | 1.0000 | Giảm 30% khi bị tiêm lỗi (`qa-001`, `qa-002`, `qa-006` trượt retrieval do mất bài mới & cắt ngắn tiêu đề); phục hồi 100% sau Repair. |
+| `mean_token_f1` | 1.0000 | 0.7000 | 1.0000 | Giảm 30% do trả lời sai bài (`qa-001`), sai ngày xuất bản (`qa-003`) và trả về chuỗi nhiễu (`qa-005`); phục hồi 1.0000 sau Repair. |
+| `judge_accuracy` | 1.0000 | 0.7000 | 1.0000 | Giảm từ 10/10 câu đúng xuống 7/10 câu đúng; khôi phục hoàn toàn 10/10 sau khi tái tạo từ raw snapshot. |
+| `mean_judge_score` | 5.0000 | 3.8000 | 5.0000 | Sụt giảm 1.2 điểm trên thang 5.0 ở trạng thái Corrupted và lấy lại điểm tuyệt đối 5.0 sau Repair. |
+| Quality checks (GX 1.x) | PASS (6/6) | FAIL (4/6) | PASS (6/6) | Corrupted fail 2 expectation trọng yếu: `expect_column_values_to_be_unique` (`paper_id`) và `expect_column_value_lengths_to_be_between` (`summary`). |
+| Freshness status | FRESH (4.17% stale) | STALE (57.14% stale) | FRESH (4.17% stale) | Corrupted có 12/21 bài quá hạn 180 ngày (`57.14% > 25%` SLA); Repaired đưa tỷ lệ về lại 1/24 (`4.17%`). |
 
 ### Kết luận từ số liệu
 
-1. **Chuỗi nguyên nhân – bằng chứng 1 (Corruption):** Việc áp dụng 6 kịch bản trong `src/ingestion/corruption.py` (xóa 5 bài mới nhất, làm rỗng 4 summary, chèn nhiễu 4 summary, cắt ngắn 5 tiêu đề, lùi ngày xuất bản 9 bài thêm 400 ngày, nhân bản 2 dòng — lưu tại `data/results/corruption_log.json`) $\rightarrow$ làm tỷ lệ bài quá hạn tăng vọt từ `4.17%` lên `47.62%` (vượt trần 25% Freshness SLA) và phá vỡ tính duy nhất của `paper_id` cũng như độ dài tối thiểu của `title`/`summary` $\rightarrow$ làm hỏng trực tiếp cả khóa tra cứu chính xác theo tiêu đề lẫn chất lượng ngữ cảnh trong `text_for_embedding`.
-2. **Chuỗi nguyên nhân – bằng chứng 2 (Repair):** Thực thi cơ chế Idempotent Repair bằng cách nạp lại bản lưu trữ bất biến `data/raw/crossref_records.json` qua `build_clean_dataframe` $\rightarrow$ loại bỏ hoàn toàn các dòng trùng lặp, khôi phục đủ 24 bài báo sạch vào `data/clean/papers_clean_repaired.json` và đưa tỷ lệ bài quá hạn về lại `4.17% <= 25%` $\rightarrow$ phục hồi hoàn toàn chất lượng dữ liệu đầu vào cho Vector Store.
+1. **Chuỗi nguyên nhân – bằng chứng 1 (Corruption):** Việc áp dụng 6 kịch bản trong `src/ingestion/corruption.py` (xóa 5 bài mới nhất, làm rỗng 4 summary, chèn nhiễu 4 summary, cắt ngắn 5 tiêu đề, lùi ngày xuất bản 9 bài thêm 400 ngày, nhân bản 2 dòng — lưu tại `data/results/corruption_log.json`) $\rightarrow$ làm GX Quality Gate chuyển sang **FAIL** (4 dòng trùng `paper_id`, 6 dòng rỗng `summary`) và đẩy tỷ lệ bài quá hạn từ `4.17%` (1/24) lên `57.14%` (12/21, trạng thái **STALE**) $\rightarrow$ kéo `retrieval_hit_rate` và `mean_token_f1` từ `1.0000` xuống `0.7000` và `mean_judge_score` từ `5.0` xuống `3.8`.
+2. **Chuỗi nguyên nhân – bằng chứng 2 (Repair):** Thực thi cơ chế Idempotent Repair bằng cách nạp lại bản lưu trữ bất biến `data/raw/crossref_records.json` qua `build_clean_dataframe` $\rightarrow$ khôi phục đủ 24 bài báo sạch vào `data/clean/papers_clean_repaired.json`, đưa GX Quality Gate về **PASS** và Freshness SLA về **FRESH** (`stale_ratio = 0.0417 <= 0.25`) $\rightarrow$ khôi phục `retrieval_hit_rate = 1.0000`, `mean_token_f1 = 1.0000` và `mean_judge_score = 5.0` trong `data/results/repaired_metrics.json`.
 
 **Corruption nào ảnh hưởng rõ nhất và vì sao?**
 Kịch bản **`drop_latest_records`** (kết hợp với **`truncate_title`** và **`blank_summary`**) gây tác động nặng nề nhất. Khi 20% bản ghi mới nhất bị xóa khỏi tập dữ liệu, mọi truy vấn nhắm vào các bài báo đó hoàn toàn mất ground-truth document trong ChromaDB (Retrieval Hit chắc chắn bằng 0). Đồng thời, `truncate_title` làm gãy cơ chế exact-title lookup của QA Agent và `blank_summary` khiến câu trả lời trích xuất từ tóm tắt trở thành chuỗi rỗng.
