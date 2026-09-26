@@ -8,11 +8,11 @@
 
 ## 👥 Danh Sách Thành Viên (Nhóm 3 người)
 
-| STT | Họ và tên | MSSV | Vai trò chính | Phân công module code | Báo cáo cá nhân |
-|:---:|---|:---:|---|---|---|
-| 1 | **Phạm Hoàng Trọng** | 2A202602765 | **Trưởng nhóm & Pipeline Integrator + Vector RAG** | `core/`, `retrieval/index.py`, `src/pipelines/phase1.py`, `src/pipelines/corruption_flow.py`, `script/` | `report/2A202602765_PhamHoangTrong.md` |
-| 2 | **Lâm Hải Dương** | 2A202602676 | **Data Foundation & Corruption & Repair** | `src/ingestion/crossref.py`, `src/ingestion/cleaning.py`, `src/ingestion/corruption.py`, raw snapshots | `report/2A202602676_LamHaiDuong.md` |
-| 3 | **Lê Thị Thuỳ Trang** | 2A202602678 | **Data Observability & Benchmark Evaluation** | `src/observability/quality.py` (GX 1.x), `src/evaluation/testset.py`, `src/observability/reporting.py` | `report/2A202602678_LeThiThuyTrang.md` |
+| STT | Họ và tên | MSSV | Vai trò chính | Phân công module code | Tỷ lệ đóng góp (% Contribution) | Báo cáo cá nhân |
+|:---:|---|:---:|---|---|:---:|---|
+| 1 | **Phạm Hoàng Trọng** | 2A202602765 | **Trưởng nhóm & Pipeline Integrator + Vector RAG** | `core/`, `retrieval/index.py`, `src/pipelines/phase1.py`, `src/pipelines/corruption_flow.py`, `script/` | 34% | `report/2A202602765_PhamHoangTrong.md` |
+| 2 | **Lâm Hải Dương** | 2A202602676 | **Data Foundation & Corruption & Repair** | `src/ingestion/crossref.py`, `src/ingestion/cleaning.py`, `src/ingestion/corruption.py`, raw snapshots | 33% | `report/2A202602676_LamHaiDuong.md` |
+| 3 | **Lê Thị Thuỳ Trang** | 2A202602678 | **Data Observability & Benchmark Evaluation** | `src/observability/quality.py` (GX 1.x), `src/evaluation/testset.py`, `src/observability/reporting.py` | 33% | `report/2A202602678_LeThiThuyTrang.md` |
 
 ---
 
